@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Balada</title>
+
+<style>
+  :root {
+    --fundo: #0c0b10;
+    --painel: #131219;
+    --card: #1a1822;
+    --borda: #26232f;
+    --texto: #f4f2f8;
+    --cinza: #9b97a8;
+    --roxo: #8b3dff;
+    --roxo-claro: #b06bff;
+    --roxo-escuro: #3a1d6e;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--fundo);
+    color: var(--texto);
+    font-family: "Segoe UI", system-ui, sans-serif;
+    height: 100vh;
+    overflow: hidden;
+  }
+  button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+  a { color: inherit; text-decoration: none; }
+
+  .imagem, .capa, .quadrado, .estilo { background-size: cover; background-position: center; }
+  .estilo, .banner small, .banner h1 { text-shadow: 0 1px 6px rgba(0,0,0,.6); }
+
+  .app {
+    display: grid;
+    grid-template-columns: 268px 1fr;
+    grid-template-rows: 1fr 84px;
+    height: 100vh;
+  }
+
+  .sidebar {
+    border-right: 1px solid var(--borda);
+    padding: 24px 16px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .logo { font-size: 30px; font-weight: bold; padding: 0 10px 20px; }
+
+  .menu-item {
+    display: block;
+    padding: 14px 20px;
+    border-radius: 12px;
+    font-size: 17px;
+  }
+  .menu-item.ativo { background: var(--roxo-escuro); font-weight: bold; }
+
+  .playlist-titulo { margin: 20px 14px 8px; font-weight: bold; }
+  .playlist { display: flex; align-items: center; gap: 14px; padding: 8px 14px; }
+  .playlist .capa { width: 44px; height: 44px; border-radius: 8px; }
+
+  .premium {
+    margin-top: auto;
+    background: var(--painel);
+    border-radius: 16px;
+    padding: 16px;
+  }
+  .premium p { font-size: 12px; color: var(--cinza); margin: 6px 0 14px; }
+
+  .botao {
+    background: var(--roxo);
+    color: white;
+    border-radius: 999px;
+    padding: 12px 24px;
+    font-weight: bold;
+  }
+  .botao:hover { background: #9a55ff; }
+
+  .principal {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    min-height: 0;
+  }
+  .conteudo { padding: 24px; overflow-y: auto; }
+
+  .busca {
+    width: 100%;
+    max-width: 640px;
+    height: 56px;
+    padding: 0 24px;
+    border: 0;
+    border-radius: 999px;
+    background: var(--card);
+    color: var(--texto);
+    font-size: 16px;
+    margin-bottom: 24px;
+  }
+
+  .banner {
+    height: 320px;
+    border-radius: 24px;
+    padding: 48px 32px;
+    background-image: url(fotos/banner.jpg), radial-gradient(circle at 80% 30%, #8a3ff0, #25104a 50%, #0e0b16 80%);
+    background-size: cover;
+    background-position: center;
+  }
+  .banner small { color: var(--roxo-claro); font-weight: bold; }
+  .banner h1 { font-size: 56px; line-height: 1; margin: 12px 0 24px; max-width: 600px; }
+  .banner h1 span { color: var(--roxo-claro); }
+
+  .secao-titulo {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin: 32px 0 16px;
+  }
+  .secao-titulo h2 { font-size: 24px; }
+  .secao-titulo a { color: var(--cinza); }
+
+  .lista { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; }
+  .card { background: var(--card); border-radius: 14px; overflow: hidden; }
+  .card .imagem { height: 120px; }
+  .card .info { padding: 14px; }
+  .card b { display: block; }
+  .card p { font-size: 12px; color: var(--cinza); margin-top: 6px; }
+
+  .estilos { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .estilo {
+    height: 100px;
+    border-radius: 14px;
+    padding: 16px;
+    font-size: 20px;
+    font-weight: bold;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .estilo small { font-size: 12px; font-weight: normal; opacity: .85; }
+  .estilo:hover { transform: translateY(-3px); }
+
+  .lancamentos { display: grid; grid-template-columns: repeat(7, 1fr); gap: 16px; }
+  .lancamento .quadrado { aspect-ratio: 1; border-radius: 10px; margin-bottom: 8px; }
+  .lancamento b { display: block; font-size: 14px; }
+  .lancamento small { color: var(--cinza); font-size: 12px; }
+
+  .tocando {
+    margin: 24px 24px 0 0;
+    background: var(--painel);
+    border: 1px solid var(--borda);
+    border-radius: 20px;
+    padding: 24px;
+    align-self: start;
+  }
+  .tocando .topo { display: flex; justify-content: space-between; margin-bottom: 20px; font-weight: bold; }
+  .tocando .capa-grande {
+    height: 246px;
+    border-radius: 14px;
+    background: radial-gradient(circle at 70% 20%, #e0302a, #7a1015 55%, #2a0a10);
+    display: grid;
+    place-items: center;
+    font-size: 30px;
+    font-weight: 900;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .capa-grande img, .player .mini img {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+  }
+  .musica { display: flex; justify-content: space-between; align-items: center; margin-top: 24px; }
+  .musica h3 { font-size: 22px; }
+  .musica p { color: var(--cinza); margin-top: 6px; }
+
+  .coracao { font-size: 26px; }
+  .coracao.curtido { color: var(--roxo-claro); }
+
+  .barra { height: 4px; background: #3a3744; border-radius: 4px; margin: 24px 0 10px; cursor: pointer; }
+  .barra .preenchido { height: 100%; width: 40%; background: var(--roxo); border-radius: 4px; }
+  .tempos { display: flex; justify-content: space-between; font-size: 13px; color: var(--cinza); }
+
+  .controles { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; font-size: 24px; }
+  .botao-play {
+    width: 64px; height: 64px;
+    border-radius: 50%;
+    background: var(--roxo);
+    font-size: 24px;
+  }
+
+  .player {
+    grid-column: 1 / -1;
+    border-top: 1px solid var(--borda);
+    display: grid;
+    grid-template-columns: 300px 1fr 200px;
+    align-items: center;
+    gap: 24px;
+    padding: 0 28px;
+  }
+  .player .atual { display: flex; align-items: center; gap: 16px; }
+  .player .mini { width: 70px; height: 54px; border-radius: 8px; background: #7a1015; position: relative; overflow: hidden; }
+  .player small { color: var(--cinza); }
+
+  @media (max-width: 900px) {
+    .app { grid-template-columns: 1fr; }
+    .sidebar, .tocando { display: none; }
+    .principal { grid-template-columns: 1fr; }
+    .banner h1 { font-size: 36px; }
+    .lista, .lancamentos { display: flex; overflow-x: auto; }
+    .card { min-width: 150px; }
+    .lancamento { min-width: 110px; }
+    .estilos { grid-template-columns: repeat(2, 1fr); }
+    .player { grid-template-columns: 1fr auto; }
+    .player .progresso { display: none; }
+  }
+</style>
+</head>
+
+<body>
+<div class="app">
+
+  <aside class="sidebar">
+    <div class="logo">vybe music</div>
+
+    <a class="menu-item ativo" href="#">🏠 Início</a>
+    <a class="menu-item" href="#">🔍 Buscar</a>
+    <a class="menu-item" href="#">📚 Sua Biblioteca</a>
+
+    <div class="playlist-titulo">Playlists</div>
+    <a class="playlist" href="#"><div class="capa" style="background: url(fotos/playlist-curtidas.jpg) center/cover, #8b3dff"></div>Músicas Curtidas</a>
+    <a class="playlist" href="#"><div class="capa" style="background: url(fotos/playlist-verao.jpg) center/cover, linear-gradient(#f4a53d,#e0407a)"></div>Vybe Verão 2026</a>
+    <a class="playlist" href="#"><div class="capa" style="background: url(fotos/playlist-estudos.jpg) center/cover, #1d3a7a"></div>Vybe de Estudos</a>
+    <a class="playlist" href="#"><div class="capa" style="background: url(fotos/playlist-rolezin.jpg) center/cover, #b02a2a"></div>Vybe no Rolê</a>
+    <a class="playlist" href="#"><div class="capa" style="background: url(fotos/playlist-top50.jpg) center/cover, #f5b400"></div>Top 50 Brasil</a>
+
+    <div class="premium">
+      <b>VYBE INFINITA</b>
+      <p>Ouça sem anúncios, baixe músicas e muito mais!</p>
+      <button class="botao" style="width:100%">Assinar</button>
+    </div>
+  </aside>
+
+  <main class="principal">
+
+    <div class="conteudo">
+      <input class="busca" type="search" placeholder="Buscar artistas, músicas, playlists...">
+
+      <section class="banner">
+        <small>SINTA A VYBE</small>
+        <h1>Sua trilha sonora, sempre <span>com você.</span></h1>
+        <button class="botao">▶ Descobrir agora</button>
+      </section>
+
+      <div class="secao-titulo"><h2>Feito para você</h2><a href="#">Ver tudo →</a></div>
+      <div class="lista">
+        <div class="card">
+          <div class="imagem" style="background: url(fotos/mix-kaiky.jpg) center/cover, linear-gradient(#7a3a9a,#e0507a)"></div>
+          <div class="info"><b>Mix do Kaiky</b><p>Com Luan Santana, Mc Ryan SP e mais</p></div>
+        </div>
+        <div class="card">
+          <div class="imagem" style="background: url(fotos/top-brasil.jpg) center/cover, #08080a"></div>
+          <div class="info"><b>Top Brasil</b><p>As mais tocadas no país</p></div>
+        </div>
+        <div class="card">
+          <div class="imagem" style="background: url(fotos/mood-da-noite.jpg) center/cover, linear-gradient(#10204a,#c02a8a)"></div>
+          <div class="info"><b>Mood da Noite</b><p>Para relaxar ou refletir</p></div>
+        </div>
+        <div class="card">
+          <div class="imagem" style="background: url(fotos/treino-pesado.jpg) center/cover, linear-gradient(#2a2a2e,#0e0e10)"></div>
+          <div class="info"><b>Treino Pesado</b><p>Música pra dar o seu máximo</p></div>
+        </div>
+        <div class="card">
+          <div class="imagem" style="background: url(fotos/balada-sertaneja.jpg) center/cover, linear-gradient(#1a2a5a,#6a4a8a)"></div>
+          <div class="info"><b>Vybe Sertaneja</b><p>O melhor do Sertanejo</p></div>
+        </div>
+      </div>
+
+      <div class="secao-titulo"><h2>Estilos musicais</h2><a href="#">Ver tudo →</a></div>
+      <div class="estilos">
+        <a class="estilo" href="#" style="background: url(fotos/estilo-sertanejo.jpg) center/cover, linear-gradient(135deg,#c0702a,#6a3a10)">Sertanejo<small>Luan Santana, Gusttavo Lima</small></a>
+        <a class="estilo" href="#" style="background: url(fotos/estilo-funk.jpg) center/cover, linear-gradient(135deg,#e0307a,#6a1050)">Funk<small>Mc Ryan SP, Kevin o Chris</small></a>
+        <a class="estilo" href="#" style="background: url(fotos/estilo-pagode.jpg) center/cover, linear-gradient(135deg,#2a9a5a,#0f4a2a)">Pagode<small>Menos é Mais, Turma do Pagode</small></a>
+        <a class="estilo" href="#" style="background: url(fotos/estilo-forro.jpg) center/cover, linear-gradient(135deg,#e0a02a,#8a4a10)">Forró<small>Wesley Safadão, Xand Avião</small></a>
+        <a class="estilo" href="#" style="background: url(fotos/estilo-pop.jpg) center/cover, linear-gradient(135deg,#8b3dff,#3a1d6e)">Pop<small>Anitta, Ludmilla</small></a>
+        <a class="estilo" href="#" style="background: url(fotos/estilo-rock.jpg) center/cover, linear-gradient(135deg,#c02a2a,#4a0f0f)">Rock<small>Legião Urbana, Capital Inicial</small></a>
+        <a class="estilo" href="#" style="background: url(fotos/estilo-rap.jpg) center/cover, linear-gradient(135deg,#3a6aff,#10204a)">Rap / Trap<small>Matuê, Djonga</small></a>
+        <a class="estilo" href="#" style="background: url(fotos/estilo-eletronica.jpg) center/cover, linear-gradient(135deg,#2ac0c0,#104a5a)">Eletrônica<small>Alok, Vintage Culture</small></a>
+      </div>
+
+      <div class="secao-titulo"><h2>Lançamentos</h2><a href="#">Ver tudo →</a></div>
+      <div class="lancamentos">
+        <div class="lancamento"><div class="quadrado" style="background: url(fotos/lancamento-1.jpg) center/cover, #6a5a3a"></div><b>Modão</b><small>Sertanejo</small></div>
+        <div class="lancamento"><div class="quadrado" style="background: url(fotos/lancamento-2.jpg) center/cover, #3a3a3a"></div><b>Madrugada</b><small>Rap / Trap</small></div>
+        <div class="lancamento"><div class="quadrado" style="background: url(fotos/lancamento-3.jpg) center/cover, #d02a2a"></div><b>Fogo</b><small>Funk</small></div>
+        <div class="lancamento"><div class="quadrado" style="background: url(fotos/lancamento-4.jpg) center/cover, #1a1a22"></div><b>Neon</b><small>Eletrônica</small></div>
+        <div class="lancamento"><div class="quadrado" style="background: url(fotos/lancamento-5.jpg) center/cover, #ff7ac0"></div><b>Brilho</b><small>Pop</small></div>
+        <div class="lancamento"><div class="quadrado" style="background: url(fotos/lancamento-6.jpg) center/cover, #4a4a3a"></div><b>Roda de Samba</b><small>Pagode</small></div>
+        <div class="lancamento"><div class="quadrado" style="background: url(fotos/lancamento-7.jpg) center/cover, #c04aff"></div><b>Arrasta Pé</b><small>Forró</small></div>
+      </div>
+    </div>
+
+    <aside class="tocando">
+      <div class="topo">Tocando agora <button>✕</button></div>
+      <div class="capa-grande">
+        <span>LUAN<br>SANTANA</span>
+        <img src="fotos/luan-santana.jpg" alt="Luan Santana" onerror="this.remove()">
+      </div>
+
+      <div class="musica">
+        <div><h3>MEIO TERMO</h3><p>Luan Santana</p></div>
+        <button class="coracao">♡</button>
+      </div>
+
+      <div class="barra"><div class="preenchido"></div></div>
+      <div class="tempos"><span class="tempo-atual">1:24</span><span>3:27</span></div>
+
+      <div class="controles">
+        <button>🔀</button>
+        <button>⏮</button>
+        <button class="botao-play" id="botao-play">⏸</button>
+        <button>⏭</button>
+        <button>🔁</button>
+      </div>
+    </aside>
+  </main>
+
+  <footer class="player">
+    <div class="atual">
+      <div class="mini"><img src="fotos/luan-santana.jpg" alt="" onerror="this.remove()"></div>
+      <div><b>MEIO TERMO</b><br><small>Luan Santana</small></div>
+      <button class="coracao">♡</button>
+    </div>
+
+    <div class="progresso">
+      <div class="barra"><div class="preenchido"></div></div>
+      <div class="tempos"><span class="tempo-atual">1:24</span><span>3:27</span></div>
+    </div>
+
+    <div>🔊 ━━━━○</div>
+  </footer>
+</div>
+
+<script>
+  const duracao = 207;
+  let segundoAtual = 84;
+  let tocando = true;
+
+  const botaoPlay  = document.getElementById("botao-play");
+  const barras     = document.querySelectorAll(".barra");
+  const preenchidos = document.querySelectorAll(".preenchido");
+  const tempos     = document.querySelectorAll(".tempo-atual");
+  const coracoes   = document.querySelectorAll(".coracao");
+
+  function formatar(segundos) {
+    const min = Math.floor(segundos / 60);
+    const seg = String(segundos % 60).padStart(2, "0");
+    return min + ":" + seg;
+  }
+
+  function atualizar() {
+    const porcentagem = (segundoAtual / duracao) * 100;
+    preenchidos.forEach(p => p.style.width = porcentagem + "%");
+    tempos.forEach(t => t.textContent = formatar(segundoAtual));
+  }
+
+  botaoPlay.addEventListener("click", () => {
+    tocando = !tocando;
+    botaoPlay.textContent = tocando ? "⏸" : "▶";
+  });
+
+  setInterval(() => {
+    if (tocando) {
+      segundoAtual = segundoAtual >= duracao ? 0 : segundoAtual + 1;
+      atualizar();
+    }
+  }, 1000);
+
+  barras.forEach(barra => {
+    barra.addEventListener("click", (evento) => {
+      const caixa = barra.getBoundingClientRect();
+      const posicao = (evento.clientX - caixa.left) / caixa.width;
+      segundoAtual = Math.floor(posicao * duracao);
+      atualizar();
+    });
+  });
+
+  coracoes.forEach(coracao => {
+    coracao.addEventListener("click", () => {
+      coracoes.forEach(c => {
+        c.classList.toggle("curtido");
+        c.textContent = c.classList.contains("curtido") ? "♥" : "♡";
+      });
+    });
+  });
+
+  atualizar();
+</script>
+</body>
+</html>
